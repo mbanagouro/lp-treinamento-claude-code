@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Code para Desenvolvedores .NET — O Guia Definitivo</title>
+  <meta name="description" content="O guia prático para devs .NET que querem usar IA de verdade no trabalho. Claude Code na prática, com casos reais de produção." />
+  <!-- ═══════════════════════════════════════════════════════════
+       GOOGLE ANALYTICS 4
+       Substitua G-XXXXXXXXXX pelo seu Measurement ID.
+       Encontre em: GA4 → Admin → Data Streams → seu stream → Measurement ID
+  ════════════════════════════════════════════════════════════ -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX', {
+      page_title: document.title,
+      page_location: window.location.href
+    });
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       META PIXEL
+       Substitua XXXXXXXXXXXXXXXXXX pelo seu Pixel ID (só números).
+       Encontre em: Meta Ads Manager → Events Manager → seu Pixel → ID
+  ════════════════════════════════════════════════════════════ -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'XXXXXXXXXXXXXXXXXX');
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=XXXXXXXXXXXXXXXXXX&ev=PageView&noscript=1"
+      alt="" />
+  </noscript>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Claude brand palette */
+      --bg:        #141413;
+      --bg-card:   #1c1b19;
+      --bg-card2:  #232220;
+      --border:    rgba(176,174,165,0.15);
+      --orange:    #d97757;   /* Crail Orange — primary accent */
+      --orange-dim:#7a3e2a;
+      --blue:      #6a9bcc;   /* Slate Blue — secondary accent */
+      --green:     #788c5d;   /* brand green */
+      --text:      #faf9f5;   /* Claude Light */
+      --muted:     #b0aea5;   /* Mid Gray */
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'Lora', Georgia, serif;
+      --heading:   'Poppins', Arial, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { max-width: 100%; display: block; }
+
+    /* ── LAYOUT ─────────────────────────────────────── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section { padding: 80px 0; }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(13,17,23,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--orange);
+      letter-spacing: 0.04em;
+    }
+
+    .nav-cta {
+      background: var(--orange);
+      color: #141413;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 8px 20px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 150ms ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .nav-cta:hover { opacity: 0.85; text-decoration: none; }
+
+    /* ── HERO ────────────────────────────────────────── */
+    #hero {
+      padding: 100px 0 80px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--orange);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-family: var(--heading);
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .hero-title span {
+      color: var(--orange);
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2.5vw, 19px);
+      color: var(--muted);
+      max-width: 640px;
+      margin-bottom: 36px;
+      line-height: 1.65;
+    }
+
+    .hero-sub strong {
+      color: var(--text);
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--orange);
+      color: #141413;
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 17px;
+      padding: 14px 32px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 150ms ease, transform 150ms ease;
+      text-decoration: none;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); text-decoration: none; }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-primary svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+    .hero-note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .hero-code-preview {
+      margin-top: 52px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .code-topbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #1c2230;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .code-dot.red   { background: #ff5f57; }
+    .code-dot.yellow{ background: #febc2e; }
+    .code-dot.green { background: #28c840; }
+
+    .code-filename {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+
+    .code-body {
+      padding: 20px 24px;
+      font-family: var(--mono);
+      font-size: 13.5px;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .c-comment { color: #6e6d68; }
+    .c-prompt  { color: var(--orange); }
+    .c-output  { color: var(--blue); }
+    .c-dim     { color: var(--muted); }
+
+    /* ── SECTION TITLES ──────────────────────────────── */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--orange);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-family: var(--heading);
+      font-size: clamp(22px, 3.5vw, 32px);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+
+    .section-lead {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    /* ── PARA QUEM ───────────────────────────────────── */
+    #para-quem { border-bottom: 1px solid var(--border); }
+
+    .audience-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .audience-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 22px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      transition: border-color 200ms ease;
+    }
+    .audience-card:hover { border-color: var(--orange-dim); }
+
+    .audience-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(217,119,87,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .audience-icon svg { width: 18px; height: 18px; color: var(--orange); }
+
+    .audience-card h3 {
+      font-family: var(--heading);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .audience-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ── O QUE VOCÊ VAI APRENDER ─────────────────────── */
+    #o-que-aprender { border-bottom: 1px solid var(--border); }
+
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .topic-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      transition: border-color 200ms ease, background 200ms ease;
+      cursor: default;
+    }
+    .topic-card:hover {
+      border-color: var(--orange);
+      background: var(--bg-card2);
+    }
+
+    .topic-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--orange);
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .topic-card h3 {
+      font-family: var(--heading);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .topic-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── AUTHOR ──────────────────────────────────────── */
+    #autor { border-bottom: 1px solid var(--border); }
+
+    .author-box {
+      display: flex;
+      gap: 36px;
+      align-items: flex-start;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 36px 40px;
+    }
+
+    .author-avatar {
+      flex-shrink: 0;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--orange-dim), #141413);
+      border: 2px solid rgba(217,119,87,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--heading);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--orange);
+    }
+
+    .author-name {
+      font-family: var(--heading);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .author-role {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--orange);
+      margin-bottom: 14px;
+    }
+    .author-bio {
+      color: var(--muted);
+      font-size: 15.5px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .author-stats {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+    .stat { }
+    .stat-num {
+      font-family: var(--heading);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--orange);
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── PRECO ───────────────────────────────────────── */
+    #preco { border-bottom: 1px solid var(--border); }
+
+    .price-box {
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--orange);
+      border-radius: 16px;
+      padding: 40px 44px;
+      text-align: center;
+      position: relative;
+    }
+
+    .price-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--orange);
+      color: #141413;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 16px;
+      border-radius: 20px;
+      white-space: nowrap;
+      letter-spacing: 0.06em;
+    }
+
+    .price-amount {
+      font-family: var(--mono);
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      margin: 20px 0 4px;
+    }
+
+    .price-currency {
+      font-size: 22px;
+      color: var(--muted);
+      vertical-align: super;
+      font-weight: 400;
+      margin-right: 4px;
+    }
+
+    .price-note {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .includes-list {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .includes-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .includes-list li svg {
+      width: 16px;
+      height: 16px;
+      color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .price-box .btn-primary {
+      width: 100%;
+      justify-content: center;
+      font-size: 18px;
+      padding: 16px;
+    }
+
+    .guarantee {
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ── FAQ ─────────────────────────────────────────── */
+    #faq { border-bottom: 1px solid var(--border); }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    details {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    details + details { margin-top: 8px; }
+
+    summary {
+      padding: 20px 24px;
+      cursor: pointer;
+      font-family: var(--heading);
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--text);
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      transition: background 150ms;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary:hover { background: var(--bg-card2); }
+
+    summary::after {
+      content: '';
+      display: block;
+      width: 18px;
+      height: 18px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238b949e' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      flex-shrink: 0;
+      transition: transform 200ms ease;
+    }
+    details[open] summary::after { transform: rotate(180deg); }
+
+    .faq-answer {
+      padding: 0 24px 22px;
+      color: var(--muted);
+      font-size: 15.5px;
+      line-height: 1.7;
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    footer {
+      padding: 36px 0;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+
+    footer a { color: var(--muted); }
+    footer a:hover { color: var(--blue); }
+
+    /* ── UTILITIES ───────────────────────────────────── */
+    .divider {
+      width: 48px;
+      height: 2px;
+      background: var(--orange);
+      margin-bottom: 32px;
+      border-radius: 2px;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 640px) {
+      section { padding: 56px 0; }
+
+      #hero { padding: 60px 0 48px; }
+
+      .author-box {
+        flex-direction: column;
+        padding: 28px 24px;
+        gap: 20px;
+      }
+
+      .price-box {
+        padding: 36px 24px;
+      }
+
+      .author-stats { gap: 20px; }
+
+      .code-body { font-size: 12px; padding: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav aria-label="Navegação principal">
+    <div class="nav-inner">
+      <span class="nav-logo">$ claude-code-book.md</span>
+      <a href="#preco" class="nav-cta" data-cta="nav">Quero o Ebook</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Ebook técnico para devs .NET</p>
+      <h1 class="hero-title">
+        Claude Code para<br>
+        <span>Desenvolvedores .NET</span><br>
+        O Guia Definitivo
+      </h1>
+      <p class="hero-sub">
+        Não é mais um tutorial de IA. É o guia de quem usa Claude Code em <strong>produção real</strong>,
+        com times reais, entregando software de verdade para clientes de verdade.
+      </p>
+      <a href="#preco" class="btn-primary" aria-label="Ir para a página de compra" data-cta="hero">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Quero o Ebook
+      </a>
+      <p class="hero-note">Acesso imediato · PDF + EPUB · Sem assinatura</p>
+
+      <div class="hero-code-preview" role="img" aria-label="Exemplo de interação com Claude Code">
+        <div class="code-topbar">
+          <span class="code-dot red"></span>
+          <span class="code-dot yellow"></span>
+          <span class="code-dot green"></span>
+          <span class="code-filename">terminal — ~/meu-projeto-net</span>
+        </div>
+        <div class="code-body">
+          <span class="c-comment"># O que você vai conseguir fazer depois de ler esse livro:</span><br><br>
+          <span class="c-dim">$ </span><span class="c-prompt">claude "cria um endpoint REST para cadastro de usuários</span><br>
+          <span class="c-prompt">   com validação, testes unitários e migration do EF Core"</span><br><br>
+          <span class="c-output">✔ UserController.cs criado</span><br>
+          <span class="c-output">✔ CreateUserRequest.cs com FluentValidation</span><br>
+          <span class="c-output">✔ UserRepositoryTests.cs — 8 testes passando</span><br>
+          <span class="c-output">✔ Migration 20240315_AddUsersTable aplicada</span><br><br>
+          <span class="c-dim">Tempo: 47 segundos.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARA QUEM -->
+  <section id="para-quem">
+    <div class="container">
+      <p class="section-label">Para quem é</p>
+      <h2 class="section-title">Esse livro é para você se…</h2>
+      <p class="section-lead">
+        Não é um guia introdutório de IA genérica. É para quem já escreve código sério
+        e quer saber como integrar Claude Code no fluxo de trabalho real.
+      </p>
+      <div class="divider" aria-hidden="true"></div>
+
+      <div class="audience-grid">
+
+        <div class="audience-card">
+          <div class="audience-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            </svg>
+          </div>
+          <div>
+            <h3>Dev .NET com 3+ anos de experiência</h3>
+            <p>Você já domina C#, ASP.NET e Entity Framework. Quer saber como IA encaixa nisso, não como "usar o ChatGPT".</p>
+          </div>
+        </div>
+
+        <div class="audience-card">
+          <div class="audience-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <div>
+            <h3>Tech Lead ou arquiteto</h3>
+            <p>Você decide como o time trabalha. Quer entender o que ganhar ao colocar Claude Code no processo — e o que evitar.</p>
+          </div>
+        </div>
+
+        <div class="audience-card">
+          <div class="audience-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <h3>Dev que quer entregar mais rápido</h3>
+            <p>Você está cansado de tarefas repetitivas que consomem horas e quer recuperar tempo para o que importa.</p>
+          </div>
+        </div>
+
+        <div class="audience-card">
+          <div class="audience-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+          </div>
+          <div>
+            <h3>CTO ou dono de software house</h3>
+            <p>Você lidera um time. Quer saber se — e como — adotar Claude Code sem perder controle de qualidade e arquitetura.</p>
+          </div>
+        </div>
+
+        <div class="audience-card">
+          <div class="audience-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          <div>
+            <h3>Dev curioso que quer sair na frente</h3>
+            <p>Você vê a mudança acontecendo e quer estar do lado certo — aprendendo com quem já fez funcionar em produção.</p>
+          </div>
+        </div>
+
+        <div class="audience-card">
+          <div class="audience-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3>Freelancer ou dev solo</h3>
+            <p>Você é uma pessoa só. Claude Code te dá fôlego para competir com times maiores — se souber usá-lo direito.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- O QUE VOCÊ VAI APRENDER -->
+  <section id="o-que-aprender">
+    <div class="container">
+      <p class="section-label">Conteúdo</p>
+      <h2 class="section-title">O que você vai aprender</h2>
+      <p class="section-lead">
+        Seis blocos práticos. Cada um resolve um problema real que você vai encontrar
+        quando tentar usar Claude Code de verdade no trabalho.
+      </p>
+      <div class="divider" aria-hidden="true"></div>
+
+      <div class="topics-grid">
+
+        <div class="topic-card">
+          <p class="topic-num">01 / 06</p>
+          <h3>Claude Code na prática</h3>
+          <p>Como o Claude Code funciona de verdade — não o pitch de marketing. O que ele consegue fazer, o que não consegue, e onde você vai perder tempo se não souber a diferença.</p>
+        </div>
+
+        <div class="topic-card">
+          <p class="topic-num">02 / 06</p>
+          <h3>Workflows com .NET</h3>
+          <p>Integração com ASP.NET, Entity Framework, Minimal APIs e Clean Architecture. Como estruturar seus projetos para o Claude Code ser útil, não um estorvo.</p>
+        </div>
+
+        <div class="topic-card">
+          <p class="topic-num">03 / 06</p>
+          <h3>Prompts que funcionam de verdade</h3>
+          <p>Chega de tentar no escuro. A estrutura de prompt que eu uso no dia a dia com meu time — contexto, restrições, formato, verificação. E os anti-patterns que desperdiçam tokens.</p>
+        </div>
+
+        <div class="topic-card">
+          <p class="topic-num">04 / 06</p>
+          <h3>Automação de tarefas repetitivas</h3>
+          <p>CRUD, migrations, testes unitários, documentação de API, scripts de build. O tipo de coisa que consome horas do seu dia e que o Claude Code resolve em minutos.</p>
+        </div>
+
+        <div class="topic-card">
+          <p class="topic-num">05 / 06</p>
+          <h3>Integração com pipelines CI/CD</h3>
+          <p>Como encaixar Claude Code em GitHub Actions, revisões de PR e processos de deploy. O que funciona, o que é arriscado, e onde você precisa manter o controle humano.</p>
+        </div>
+
+        <div class="topic-card">
+          <p class="topic-num">06 / 06</p>
+          <h3>Casos reais de produção</h3>
+          <p>Exemplos concretos de projetos reais da minha empresa — o que deu certo, o que deu errado, e o que eu faria diferente. Nada de exemplo inventado.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- AUTOR -->
+  <section id="autor">
+    <div class="container">
+      <p class="section-label">Quem escreveu</p>
+      <h2 class="section-title">Sobre o autor</h2>
+      <div class="divider" aria-hidden="true"></div>
+
+      <div class="author-box">
+        <div class="author-avatar" aria-hidden="true">MB</div>
+        <div>
+          <p class="author-name">Michel Banagouro</p>
+          <p class="author-role">// CTO · .NET Developer · 20+ anos de experiência</p>
+          <p class="author-bio">
+            Fundei e dirijo uma software house no Brasil. Meu time usa Claude Code em produção
+            — não como experimento, como parte do processo de entrega. Esse livro é o que eu gostaria
+            que existisse quando comecei a usar a ferramenta: direto ao ponto, sem enrolação,
+            com exemplos de código que funcionam de verdade.
+          </p>
+          <p class="author-bio">
+            Não escrevo pra ensinar conceitos. Escrevo pra te ajudar a entregar software melhor
+            mais rápido — porque é isso que importa no final do dia.
+          </p>
+          <div class="author-stats">
+            <div class="stat">
+              <div class="stat-num">20+</div>
+              <div class="stat-label">anos com .NET</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">100+</div>
+              <div class="stat-label">projetos entregues</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">1 ano+</div>
+              <div class="stat-label">Claude Code em produção</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREÇO -->
+  <section id="preco">
+    <div class="container">
+      <p class="section-label">Investimento</p>
+      <h2 class="section-title" style="text-align:center; margin-bottom: 40px;">Acesso completo ao ebook</h2>
+
+      <div class="price-box">
+        <span class="price-badge">ACESSO VITALÍCIO</span>
+
+        <p style="color: var(--muted); font-size: 14px; margin-top: 10px;">Preço único, sem assinatura</p>
+        <p class="price-amount">
+          <span class="price-currency">R$</span>97
+        </p>
+        <p class="price-note">≈ USD 19 · pagamento único</p>
+
+        <ul class="includes-list" aria-label="O que está incluído">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Ebook completo em PDF e EPUB
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Todos os exemplos de código comentados
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Templates de prompt prontos para usar
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Atualizações futuras sem custo adicional
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Acesso imediato após o pagamento
+          </li>
+        </ul>
+
+        <a href="#checkout" class="btn-primary" aria-label="Comprar o ebook agora" data-cta="price-box">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-10H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          Quero o Ebook agora
+        </a>
+
+        <p class="guarantee">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:4px" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          Garantia de 7 dias. Não gostou, devolvo tudo.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="container">
+      <p class="section-label">Dúvidas frequentes</p>
+      <h2 class="section-title">FAQ</h2>
+      <div class="divider" aria-hidden="true"></div>
+
+      <div class="faq-list">
+
+        <details>
+          <summary>Preciso ter experiência com IA para aproveitar o livro?</summary>
+          <div class="faq-answer">
+            Não. Você precisa de experiência com .NET. O livro pressupõe que você já escreve código em C# e ASP.NET — não que você entenda de machine learning ou LLMs. A parte de IA é abordada do ponto de vista prático: o que funciona, como usar, o que evitar.
+          </div>
+        </details>
+
+        <details>
+          <summary>Qual versão do .NET é usada nos exemplos?</summary>
+          <div class="faq-answer">
+            Os exemplos usam .NET 8 e .NET 9. A maioria dos conceitos se aplica a qualquer versão moderna do .NET (6+). Onde há diferença relevante, isso está anotado no texto.
+          </div>
+        </details>
+
+        <details>
+          <summary>O conteúdo vai ficar desatualizado rápido?</summary>
+          <div class="faq-answer">
+            Os fundamentos de como usar Claude Code bem — estrutura de contexto, fluxos de trabalho, integração com pipelines — mudam muito menos do que as versões de modelo. O livro foca nisso. Além disso, você recebe todas as atualizações futuras sem custo adicional.
+          </div>
+        </details>
+
+        <details>
+          <summary>Posso usar em projetos que não são .NET?</summary>
+          <div class="faq-answer">
+            Boa parte do conteúdo — prompts, estrutura de contexto, automação, CI/CD — se aplica a qualquer stack. Os exemplos de código são em C# e ASP.NET, então se você não toca em .NET, algumas seções vão exigir adaptação. Mas os princípios são universais.
+          </div>
+        </details>
+
+        <details>
+          <summary>Como funciona o acesso depois da compra?</summary>
+          <div class="faq-answer">
+            Você recebe o link de download imediatamente após a confirmação do pagamento — PDF e EPUB, sem DRM, para usar onde quiser. Se lançar uma versão atualizada, você recebe o novo arquivo pelo mesmo canal.
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER CTA -->
+  <section style="padding: 64px 0; background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="container" style="text-align: center;">
+      <h2 style="font-family: var(--heading); font-size: clamp(20px, 3vw, 28px); font-weight: 700; color: var(--text); margin-bottom: 14px;">
+        Claude Code não é o futuro. É agora.
+      </h2>
+      <p style="color: var(--muted); max-width: 520px; margin: 0 auto 32px; font-size: 16px;">
+        Enquanto você está lendo isso, alguém está entregando em horas o que levaria dias.
+        Não precisa ser assim.
+      </p>
+      <a href="#checkout" class="btn-primary" style="margin: 0 auto;" aria-label="Comprar o ebook" data-cta="footer-cta">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Quero o Ebook — R$ 97
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCRIPT DE CONVERSÃO
+       Eventos disparados:
+         GA4  → view_item        (seção de preço entra na tela)
+         GA4  → begin_checkout   (qualquer botão CTA clicado)
+         Meta → ViewContent      (seção de preço entra na tela)
+         Meta → InitiateCheckout (qualquer botão CTA clicado)
+  ════════════════════════════════════════════════════════════ -->
+  <script>
+    (function () {
+      var PRODUCT = {
+        item_id:       'ebook-claude-code',
+        item_name:     'Claude Code para Desenvolvedores .NET — O Guia Definitivo',
+        item_category: 'Ebook',
+        currency:      'BRL',
+        value:         97.00
+      };
+
+      /* ── CTA click → InitiateCheckout / begin_checkout ── */
+      document.querySelectorAll('[data-cta]').forEach(function (el) {
+        el.addEventListener('click', function () {
+          var location = el.getAttribute('data-cta');
+
+          /* GA4 */
+          if (typeof gtag === 'function') {
+            gtag('event', 'begin_checkout', {
+              currency: PRODUCT.currency,
+              value:    PRODUCT.value,
+              items:    [PRODUCT],
+              cta_location: location
+            });
+          }
+
+          /* Meta Pixel */
+          if (typeof fbq === 'function') {
+            fbq('track', 'InitiateCheckout', {
+              content_name:     PRODUCT.item_name,
+              content_ids:      [PRODUCT.item_id],
+              content_type:     'product',
+              currency:         PRODUCT.currency,
+              value:            PRODUCT.value,
+              num_items:        1
+            });
+          }
+        });
+      });
+
+      /* ── Price section visible → ViewContent / view_item ── */
+      var priceSection = document.getElementById('preco');
+      if (priceSection && 'IntersectionObserver' in window) {
+        var viewFired = false;
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && !viewFired) {
+              viewFired = true;
+
+              /* GA4 */
+              if (typeof gtag === 'function') {
+                gtag('event', 'view_item', {
+                  currency: PRODUCT.currency,
+                  value:    PRODUCT.value,
+                  items:    [PRODUCT]
+                });
+              }
+
+              /* Meta Pixel */
+              if (typeof fbq === 'function') {
+                fbq('track', 'ViewContent', {
+                  content_name:  PRODUCT.item_name,
+                  content_ids:   [PRODUCT.item_id],
+                  content_type:  'product',
+                  currency:      PRODUCT.currency,
+                  value:         PRODUCT.value
+                });
+              }
+
+              observer.disconnect();
+            }
+          });
+        }, { threshold: 0.3 });
+
+        observer.observe(priceSection);
+      }
+
+      /* ── Scroll depth → GA4 custom milestones ── */
+      var depths = { 25: false, 50: false, 75: false, 90: false };
+      window.addEventListener('scroll', function () {
+        var scrolled = (window.scrollY + window.innerHeight) / document.body.scrollHeight * 100;
+        Object.keys(depths).forEach(function (pct) {
+          if (!depths[pct] && scrolled >= pct) {
+            depths[pct] = true;
+            if (typeof gtag === 'function') {
+              gtag('event', 'scroll_depth', { depth_percent: Number(pct) });
+            }
+          }
+        });
+      }, { passive: true });
+    })();
+  </script>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p>
+        &copy; 2025 Michel Banagouro ·
+        <a href="mailto:michel@leanwork.com.br">michel@leanwork.com.br</a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
